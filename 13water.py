@@ -34,7 +34,10 @@ end_ans = 0
 
 hua = [0, 0, 0, 0, 0, 0]
 number = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-
+score = 0.0
+cnt = 0
+global e1, e2, e3
+global a1, a2, a3
 
 def init_cnt():
     for i in range(0, 6):
@@ -68,121 +71,224 @@ def ShunZi5(start):
 
 
 def first():
+    global score
     init_cnt()
     bubble_sort(ans_3, 1, 3)
     for i in range(1, 4):
         hua[ans_3[i].flower] = hua[ans_3[i].flower] + 1
         number[ans_3[i].num] = number[ans_3[i].num] + 1
+    x = 1
     for i in range(1, 5):
         if hua[i] == 3:
             if ShunZi3(ans_3[1].num) == 1:
-                return 10
+                k = (9.0 + 0.9 / 11.0 * (ans_3[1].num - 1))
+                score += k
+                return k  # 3张同花顺
+    x = 1
     for i in range(1, 5):
         if hua[i] == 3:
-            return 7
+            k = (6.0 + 0.9 / (1300 + 130 + 13)
+                 * ((ans_3[3].num - 1) * 100 + (ans_3[2].num - 1) * 10 + (ans_3[1].num - 1)) * 1.0)
+            score += k
+            return k  # 3张同花
+    x = 1
     if ShunZi3(ans_3[1].num) == 1:
-        return 6
-    for i in range(4, 1, -1):
+        k = (5.0 + 0.9 / 11.0 * (ans_3[1].num - 1) * 1.0)
+        score += k
+        return k  # 3张顺子
+    x = 1
+    for i in range(3, 0, -1):
         if number[ans_3[i].num] == 3:
-            return 5
-    for i in range(4, 1, -1):
+            k = (4.0 + 0.9 / 13.0 * (ans_3[1].num - 1) * 1.0)
+            score += k
+            return k  # 三条
+    x = 1
+    for i in range(3, 0, -1):
+        if number[ans_3[i].num] == 1:
+            x = ans_3[i].num
         if number[ans_3[i].num] == 2:
-            return 2
-    else:
-        return 1
+            k = (1.0 + 0.9 / (130 + 13) * ((ans_3[i].num - 1) * 10 + x - 1) * 1.0)
+            score += k
+            return k  # 单对
+    x = 1
+    k = 0.9 / (1300.0 + 130.0 + 13.0) * (
+                (ans_3[3].num - 1) * 100 + (ans_3[2].num - 1) * 10 + (ans_3[1].num - 1))
+    score += k
+    return k  # 散牌
 
 
 def second():
+    global score
     init_cnt()
     bubble_sort(ans_2, 1, 5)
+    x = 1
     for i in range(1, 6):
         hua[ans_2[i].flower] = hua[ans_2[i].flower] + 1
         number[ans_2[i].num] = number[ans_2[i].num] + 1
-    for i in range(1, 5):
+    x = 1
+    for i in range(1, 6):
         if hua[i] == 5:
             if ShunZi5(ans_2[1].num) == 1:
-                return 10
-    for i in range(6, 1, -1):
+                k = (9.0 + 0.9 / 9 * (ans_2[1].num - 1)) * 1.0
+                score += k  # 14 13 12 11 10
+                return k  # 同花顺
+    x = 1
+    for i in range(5, 0, -1):
+        if number[ans_2[i].num] == 1:
+            x = ans_2[i].num
         if number[ans_2[i].num] == 4:
-            return 9
-    for i in range(6, 1, -1):
+            k = (8.0 + 0.9 / (130 + 13) * ((ans_2[i].num - 1) * 10)) * 1.0
+            score += k
+            return k  # 炸弹
+    x = 1
+    for i in range(5, 0, -1):
         if number[ans_2[i].num] == 3:
-            for j in range(6, 1, -1):
+            x = ans_2[i].num
+            for j in range(5, 0, -1):
                 if number[ans_2[j].num] == 2:
-                    return 8
-    for i in range(1, 5):
+                    k = (7.0 + 0.9 / (130 + 13) * ((x - 1) * 10 + ans_2[j].num - 1)) * 1.0
+                    score += k
+                    return k  # 葫芦
+    x = 1
+    for i in range(1, 6):
         if hua[i] == 5:
-            return 7
+            k = (6.0 + 0.9 / (130000 + 13000 + 1300 + 130 + 13) * (
+                        (ans_2[5].num - 1) * 10000 + (ans_2[4].num - 1) * 1000 + (ans_2[3].num - 1) * 100 + (
+                            ans_2[2].num - 1) * 10 + (ans_2[1].num - 1))) * 1.0
+            score += k
+            return k  # 同花
+    x = 1
     if ShunZi5(ans_2[1].num) == 1:
-        return 6
-    for i in range(6, 1, -1):
+        k = (5.0 + 0.9 / 9 * (ans_2[1].num - 1) * 1.0)
+        score += k
+        return k  # 5张顺子
+    x = 1
+    for i in range(5, 0, -1):
         if number[ans_2[i].num] == 3:
-            for j in range(6, 1, -1):
+            x = ans_2[i].num
+            for j in range(5, 0, -1):
                 if number[ans_2[j].num] == 1:
-                    return 5
-    for i in range(6, 1, -1):
+                    k = (4.0 + 0.9 / (1300 + 130 + 13) * ((x - 1) * 100))
+                    score += k
+                    return k  # 三条
+    x = 1
+    for i in range(5, 0, -1):
         if number[ans_2[i].num] == 2:
-            for j in range(6, 1, -1):
-                if (ans_2[i].num != ans_2[j].num) and \
-                        number[ans_2[j].num] == 2 and abs(ans_2[i].num - ans_2[j].num) == 1:
-                    return 4
-    for i in range(6, 1, -1):
+            for j in range(5, 0, -1):
+                if (ans_2[i].num != ans_2[j].num) and number[ans_2[j].num] == 2 and abs(
+                        ans_2[i].num - ans_2[j].num) == 1:
+                    k = (3.0 + 0.9 / 10 * (ans_2[j].num - 1 - 1)) * 1.0
+                    score += k
+                    return k  # 连对2对
+    x = 1
+    for i in range(5, 0, -1):
         if number[ans_2[i].num] == 2:
-            for j in range(6, 1, -1):
+            for j in range(5, 0, -1):
                 if (ans_2[i].num != ans_2[j].num) and number[ans_2[j].num] == 2:
-                    return 3
-    for i in range(6, 1, -1):
+                    k = (2.0 + 0.9 / (130 + 13) * ((ans_2[i].num - 1) * 10 + ans_2[j].num - 1)) * 1.0
+                    score += k
+                    return k  # 普通2对
+    x = 1
+    for i in range(5, 0, -1):
+        if number[ans_2[i].num] == 1:
+            x = ans_2[i].num
         if number[ans_2[i].num] == 2:
-            return 2
-    else:
-        return 1
+            k = (1.0 + 0.9 / (130 + 13) * ((ans_2[i].num - 1) * 10 + x - 1)) * 1.0
+            score += k
+            return k  # 单对+3张散
+
+    k = (0.9 / (130000 + 13000 + 1300 + 130 + 13) * (
+                (ans_2[5].num - 1) * 10000 + (ans_2[4].num - 1) * 1000 + (ans_2[3].num - 1) * 100 + (
+                    ans_2[2].num - 1) * 10 + ans_2[1].num - 1)) * 1.0
+    score += k
+    return k
 
 
 def third():
+    global score
     init_cnt()
-    bubble_sort(ans_2, 1, 5)
+    bubble_sort(ans_1, 1, 5)
+    x = 1
     for i in range(1, 6):
         hua[ans_1[i].flower] = hua[ans_1[i].flower] + 1
         number[ans_1[i].num] = number[ans_1[i].num] + 1
+    x = 1
     for i in range(1, 6):
         if hua[i] == 5:
             if ShunZi5(ans_1[1].num) == 1:
-                return 10
-    for i in range(6, 1, -1):
+                k = (9.0 + 0.9 / 9 * (ans_1[1].num - 1)) * 1.0  # 14 13 12 11 10
+                score += k
+                return k  # 同花顺
+    x = 1
+    for i in range(5, 0, -1):
         if number[ans_1[i].num] == 4:
-            return 9
-    for i in range(6, 1, -1):
+            x = ans_1[i].num
+        if number[ans_1[i].num] == 4:
+            k = (8.0 + 0.9 / (130 + 13) * ((ans_1[i].num - 1) * 10)) * 1.0
+            score += k
+            return k  # 炸弹
+    x = 1
+    for i in range(5, 0, -1):
         if number[ans_1[i].num] == 3:
-            for j in range(6, 1, -1):
+            x = ans_1[i].num
+            for j in range(5, 0, -1):
                 if number[ans_1[j].num] == 2:
-                    return 8
-    for i in range(1, 5):
+                    k = (7.0 + 0.9 / (130 + 13) * ((x - 1) * 10 + ans_1[j].num - 1)) * 1.0
+                    score += k
+                    return k  # 葫芦
+    x = 1
+    for i in range(1, 6):
         if hua[i] == 5:
-            return 7
+            k = (6.0 + 0.9 / (130000 + 13000 + 1300 + 130 + 13) * (
+                        (ans_1[5].num - 1) * 10000 + (ans_1[4].num - 1) * 1000 + (ans_1[3].num - 1) * 100 + (
+                            ans_1[2].num - 1) * 10 + (ans_1[1].num - 1))) * 1.0
+            score += k
+            return k  # 同花
+    x = 1
     if ShunZi5(ans_1[1].num) == 1:
-        return 6
-    for i in range(6, 1, -1):
+        k = (5.0 + 0.9 / 9 * (ans_1[1].num - 1) * 1.0)
+        score += k
+        return k  # 5张顺子
+    x = 1
+    for i in range(5, 0, -1):
         if number[ans_1[i].num] == 3:
-            for j in range(6, 1, -1):
+            x = ans_1[i].num
+            for j in range(5, 0, -1):
                 if number[ans_1[j].num] == 1:
-                    return 5
-    for i in range(6, 1, -1):
+                    k = (4.0 + 0.9 / (1300 + 130 + 13) * ((x - 1) * 100))
+                    score += k
+                    return k  # 三条
+    x = 1
+    for i in range(5, 0, -1):
         if number[ans_1[i].num] == 2:
-            for j in range(6, 1, -1):
+            for j in range(5, 0, -1):
                 if (ans_1[i].num != ans_1[j].num) and \
                         number[ans_1[j].num] == 2 and abs(ans_1[i].num - ans_1[j].num) == 1:
-                    return 4
-    for i in range(6, 1, -1):
+                    k = (3.0 + 0.9 / 10 * (ans_1[j].num - 1 - 1)) * 1.0
+                    score += k
+                    return k  # 连对2对
+    x = 1
+    for i in range(5, 0, -1):
         if number[ans_1[i].num] == 2:
-            for j in range(6, 1, -1):
+            for j in range(5, 0, -1):
                 if (ans_1[i].num != ans_1[j].num) and number[ans_1[j].num] == 2:
-                    return 3
-    for i in range(6, 1, -1):
+                    k = (2.0 + 0.9 / (130 + 13) * ((ans_1[i].num - 1) * 10 + ans_1[j].num - 1)) * 1.0
+                    score += k
+                    return k  # 普通2对
+    x = 1
+    for i in range(5, 0, -1):
+        if number[ans_1[i].num] == 1:
+            x = ans_1[i].num
         if number[ans_1[i].num] == 2:
-            return 2
-    else:
-        return 1
+            k = (1.0 + 0.9 / (130 + 13) * ((ans_1[i].num - 1) * 10 + x - 1)) * 1.0
+            score += k
+            return k  # 单对+3张散
 
+    k = (0.9 / (130000 + 13000 + 1300 + 130 + 13) * (
+                (ans_1[5].num - 1) * 10000 + (ans_1[4].num - 1) * 1000 + (ans_1[3].num - 1) * 100 + (
+                    ans_1[2].num - 1) * 10 + ans_1[1].num - 1)) * 1.0
+    score += k
+    return k
 
 def StandOf():
     for i in range(1, 4):
@@ -221,18 +327,26 @@ def Print():
 
 
 def contrast_ans():
-    global end_ans
+    global score, end_ans, cnt
+    global e1, e2, e3
+    global a1, a2, a3
     TempoF()
     k1 = first()
+    e1 = score
     k2 = second()
+    e2 = score - e1
     k3 = third()
+    e3 = score - (e1+e2)
     score = k1 + k2 + k3
     if k1 > k2 or k2 > k3 or k1 > k3:
         score = 0
     if score > end_ans:
         end_ans = score
+        a1 = e1;
+        a2 = e2;
+        a3 = e3;
         StandOf()
-
+    cnt += 1
 
 def init_2():
     index = 0
@@ -312,7 +426,7 @@ def main():
     payload = "{\"username\":\"un\",\"password\":\"pw\"}"
     headers = {'content-type': 'application/json'}
     response = requests.request("POST", url, data=payload, headers=headers)
-    # print(response.text)
+    print(response.text)
     # 解码
     response.encoding = 'utf8'
     # 读取reponse
@@ -323,8 +437,11 @@ def main():
     # print(html)
     # 获取score节点下的数据
     qq = jsonpath.jsonpath(html, '$..data.token')
+    print(qq)
     tkk = qq[0]
-    # print(tkk)
+    qq = jsonpath.jsonpath(html, '$..data.user_id')
+    pl_id = qq[0]
+
 
     url = "https://api.shisanshui.rtxux.xyz/game/open"
     headers = {'x-auth-token': tkk}
@@ -341,7 +458,7 @@ def main():
     # 获取score节点下的数据
     qq = jsonpath.jsonpath(html, '$..data.card')
     tk = qq[0]
-    # print(tk)
+    print(tk)
     tk = list(tk)
     # print(tk)
     qq = jsonpath.jsonpath(html, '$..data.id')
@@ -563,6 +680,11 @@ def main():
     toc = time.time()
     print(toc-tic)
 
+    # url = "https://api.shisanshui.rtxux.xyz/history"
+    #     # querystring = {"page": "1", "limit": "6", "player_id":"207"}
+    #     # headers = {'x-auth-token': '51964129-396d-48db-92cf-94032357c116'}
+    #     # response = requests.request("GET", url, headers=headers, params=querystring)
+    #     # print(response.text)
 
 if __name__ == '__main__':
     main()
