@@ -1,4 +1,9 @@
 import time
+import requests
+import json
+import jsonpath
+import http.client
+
 
 
 class Card:
@@ -165,7 +170,7 @@ def third():
         if number[ans_1[i].num] == 2:
             for j in range(6, 1, -1):
                 if (ans_1[i].num != ans_1[j].num) and \
-                        number[ans_1[j].num] == 2 and abs(ans_1[i].num - ans_2[j].num) == 1:
+                        number[ans_1[j].num] == 2 and abs(ans_1[i].num - ans_1[j].num) == 1:
                     return 4
     for i in range(6, 1, -1):
         if number[ans_1[i].num] == 2:
@@ -293,41 +298,268 @@ def hua_to_number(x):
 
 def main():
     tic = time.time()
-    poker_1[1] = Card(2, 2)
-    poker_1[2] = Card(3, 2)
-    poker_1[3] = Card(4, 2)
-    poker_1[4] = Card(1, 3)
-    poker_1[5] = Card(1, 4)
-    poker_1[6] = Card(4, 5)
-    poker_1[7] = Card(1, 6)
-    poker_1[8] = Card(1, 7)
-    poker_1[9] = Card(2, 9)
-    poker_1[10] = Card(3, 8)
-    poker_1[11] = Card(4, 4)
-    poker_1[12] = Card(4, 8)
-    poker_1[13] = Card(3, 5)
+    un = "yu0000"
+    pw = "abcdefg"
+
+    # url = "https://api.shisanshui.rtxux.xyz/auth/register"
+    #
+    # payload = "{\"username\":\"un\",\"password\":\"pw\"}"
+    # headers = {'content-type': 'application/json'}
+    # response = requests.request("POST", url, data=payload, headers=headers)
+    # print(response.text)
+
+    url = "https://api.shisanshui.rtxux.xyz/auth/login"
+    payload = "{\"username\":\"un\",\"password\":\"pw\"}"
+    headers = {'content-type': 'application/json'}
+    response = requests.request("POST", url, data=payload, headers=headers)
+    # print(response.text)
+    # 解码
+    response.encoding = 'utf8'
+    # 读取reponse
+    html = response.text
+    # print(html)
+    # 把json格式字符串转换成python对象
+    html = json.loads(html)
+    # print(html)
+    # 获取score节点下的数据
+    qq = jsonpath.jsonpath(html, '$..data.token')
+    tkk = qq[0]
+    # print(tkk)
+
+    url = "https://api.shisanshui.rtxux.xyz/game/open"
+    headers = {'x-auth-token': tkk}
+    response = requests.request("POST", url, headers=headers)
+    # print(response.text)
+    # 解码
+    response.encoding = 'utf8'
+    # 读取reponse
+    html = response.text
+    # print(html)
+    # 把json格式字符串转换成python对象
+    html = json.loads(html)
+    # print(html)
+    # 获取score节点下的数据
+    qq = jsonpath.jsonpath(html, '$..data.card')
+    tk = qq[0]
+    # print(tk)
+    tk = list(tk)
+    # print(tk)
+    qq = jsonpath.jsonpath(html, '$..data.id')
+    idd = qq[0]
+    # print(idd)
+    idd = str(idd)
+    # print(idd)
+    # print(len(tk))
+    i=1
+    for eachline in range(len(tk)):
+        if i == 13 and (tk[eachline] == '&' or tk[eachline] == '$' or tk[eachline] == '#' or tk[eachline] == '*'):
+            if tk[eachline + 1] == '2':
+                px = 2
+            elif tk[eachline + 1] == '3':
+                px = 3
+            elif tk[eachline + 1] == '4':
+                px = 4
+            elif tk[eachline + 1] == '5':
+                px = 5
+            elif tk[eachline + 1] == '6':
+                px = 6
+            elif tk[eachline + 1] == '7':
+                px = 7
+            elif tk[eachline + 1] == '8':
+                px = 8
+            elif tk[eachline + 1] == '9':
+                px = 9
+            elif tk[eachline + 1] == '1':
+                px = 10
+            elif tk[eachline + 1] == 'J':
+                px = 11
+            elif tk[eachline + 1] == 'Q':
+                px = 12
+            elif tk[eachline + 1] == 'K':
+                px = 13
+            elif tk[eachline + 1] == 'A':
+                px = 14
+            if tk[eachline] == '&':
+                poker_1[i] = Card(1, px)
+            elif tk[eachline] == '$':
+                poker_1[i] = Card(2, px)
+            elif tk[eachline] == '#':
+                poker_1[i] = Card(3, px)
+            elif tk[eachline] == '*':
+                poker_1[i] = Card(4, px)
+            break
+        if tk[eachline+1] == '2':
+            px = 2
+        elif tk[eachline+1] == '3':
+            px = 3
+        elif tk[eachline+1] == '4':
+            px = 4
+        elif tk[eachline+1] == '5':
+            px = 5
+        elif tk[eachline+1] == '6':
+            px = 6
+        elif tk[eachline+1] == '7':
+            px = 7
+        elif tk[eachline+1] == '8':
+            px = 8
+        elif tk[eachline+1] == '9':
+            px = 9
+        elif tk[eachline+1] == '1':
+            px = 10
+        elif tk[eachline+1] == 'J':
+            px = 11
+        elif tk[eachline+1] == 'Q':
+            px = 12
+        elif tk[eachline+1] == 'K':
+            px = 13
+        elif tk[eachline+1] == 'A':
+            px = 14
+
+        if tk[eachline] == '&' :
+            poker_1[i] = Card(1,px)
+            i = i + 1
+        elif tk[eachline] =='$':
+            poker_1[i] = Card(2, px)
+            i = i + 1
+        elif tk[eachline] =='#':
+            poker_1[i] = Card(3, px)
+            i = i + 1
+        elif tk[eachline] =='*':
+            poker_1[i] = Card(4, px)
+            i = i + 1
+        else:
+            continue
+
+    # poker_1[1] = Card(2, 2)
+    # poker_1[2] = Card(3, 2)
+    # poker_1[3] = Card(4, 2)
+    # poker_1[4] = Card(1, 3)
+    # poker_1[5] = Card(1, 4)
+    # poker_1[6] = Card(4, 5)
+    # poker_1[7] = Card(1, 6)
+    # poker_1[8] = Card(1, 7)
+    # poker_1[9] = Card(2, 9)
+    # poker_1[10] = Card(3, 8)
+    # poker_1[11] = Card(4, 4)
+    # poker_1[12] = Card(4, 8)
+    # poker_1[13] = Card(3, 5)
     dfs_1(1, 1)
+    qian = ""
+    zhong = ""
+    hou = ""
     for i in range(1, 4):
+        anss = number_to_hua(end_3[i].flower)
+        ans = end_3[i].num
+        if(ans == 14):
+            ans = 'A'
+        elif (ans == 13):
+            ans = 'K'
+        elif (ans == 12):
+            ans = 'Q'
+        elif (ans == 11):
+            ans = 'J'
+        elif (ans == 10):
+            ans = '10'
+        elif (ans == 9):
+            ans = '9'
+        elif (ans == 8):
+            ans = '8'
+        elif (ans == 7):
+            ans = '7'
+        elif (ans == 6):
+            ans = '6'
+        elif (ans == 5):
+            ans = '5'
+        elif (ans == 4):
+            ans = '4'
+        elif (ans == 3):
+            ans = '3'
+        elif (ans == 2):
+            ans = '2'
+        qian += anss
+        qian += ans
         if i != 3:
-            print(number_to_hua(end_3[i].flower), end="")
-            print(end_3[i].num, end=" ")
-        else:
-            print(number_to_hua(end_3[i].flower), end="")
-            print(end_3[i].num)
+            qian += ' '
     for i in range(1, 6):
+        anss = number_to_hua(end_2[i].flower)
+        ans = end_2[i].num
+        if (ans == 14):
+            ans = 'A'
+        elif (ans == 13):
+            ans = 'K'
+        elif (ans == 12):
+            ans = 'Q'
+        elif (ans == 11):
+            ans = 'J'
+        elif (ans == 10):
+            ans = '10'
+        elif (ans == 9):
+            ans = '9'
+        elif (ans == 8):
+            ans = '8'
+        elif (ans == 7):
+            ans = '7'
+        elif (ans == 6):
+            ans = '6'
+        elif (ans == 5):
+            ans = '5'
+        elif (ans == 4):
+            ans = '4'
+        elif (ans == 3):
+            ans = '3'
+        elif (ans == 2):
+            ans = '2'
+        zhong += anss
+        zhong += ans
         if i != 5:
-            print(number_to_hua(end_2[i].flower), end="")
-            print(end_2[i].num, end=" ")
-        else:
-            print(number_to_hua(end_2[i].flower), end="")
-            print(end_2[i].num)
+            zhong += ' '
     for i in range(1, 6):
+        anss = number_to_hua(end_1[i].flower)
+        ans = end_1[i].num
+        if (ans == 14):
+            ans = 'A'
+        elif (ans == 13):
+            ans = 'K'
+        elif (ans == 12):
+            ans = 'Q'
+        elif (ans == 11):
+            ans = 'J'
+        elif (ans == 10):
+            ans = '10'
+        elif (ans == 9):
+            ans = '9'
+        elif (ans == 8):
+            ans = '8'
+        elif (ans == 7):
+            ans = '7'
+        elif (ans == 6):
+            ans = '6'
+        elif (ans == 5):
+            ans = '5'
+        elif (ans == 4):
+            ans = '4'
+        elif (ans == 3):
+            ans = '3'
+        elif (ans == 2):
+            ans = '2'
+        hou += anss
+        hou += ans
         if i != 5:
-            print(number_to_hua(end_1[i].flower), end="")
-            print(end_1[i].num, end=" ")
-        else:
-            print(number_to_hua(end_1[i].flower), end="")
-            print(end_1[i].num)
+            hou += ' '
+    # print(qian)
+    # print(zhong)
+    # print(hou)
+
+    url = "https://api.shisanshui.rtxux.xyz/game/submit"
+    payload = "{\"id\":" + idd + ",\"card\":[\"" + qian +"\",\""+ zhong +"\",\""+ hou +"\"]}"
+    print(payload)
+    headers = {
+        'content-type': "application/json",
+        'x-auth-token': tkk
+    }
+    response = requests.request("POST", url, data=payload, headers=headers)
+    print(response.text)
+
     toc = time.time()
     print(toc-tic)
 
